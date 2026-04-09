@@ -508,9 +508,9 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
             <span class="age-group-range">18 years &amp; older</span>
           </div>
           <div class="qty-ctrl">
-            <button class="qty-btn" data-grp="adults"  data-delta="-1" class="qty-btn qty-trigger">−</button>
+            <button class="qty-btn qty-trigger" data-grp="adults"  data-delta="-1">−</button>
             <div class="qty-display" id="qAdults">0</div>
-            <button class="qty-btn" data-grp="adults"  data-delta="1"  class="qty-btn qty-trigger">+</button>
+            <button class="qty-btn qty-trigger" data-grp="adults"  data-delta="1"  >+</button>
           </div>
         </div>
 
@@ -520,9 +520,9 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
             <span class="age-group-range">13 – 17 years</span>
           </div>
           <div class="qty-ctrl">
-            <button class="qty-btn" data-grp="teens"   data-delta="-1" class="qty-btn qty-trigger">−</button>
+            <button class="qty-btn qty-trigger" data-grp="teens"   data-delta="-1">−</button>
             <div class="qty-display" id="qTeens">0</div>
-            <button class="qty-btn" data-grp="teens"   data-delta="1"  class="qty-btn qty-trigger">+</button>
+            <button class="qty-btn qty-trigger" data-grp="teens"   data-delta="1"  >+</button>
           </div>
         </div>
 
@@ -532,9 +532,9 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
             <span class="age-group-range">6 – 12 years</span>
           </div>
           <div class="qty-ctrl">
-            <button class="qty-btn" data-grp="children" data-delta="-1" class="qty-btn qty-trigger">−</button>
+            <button class="qty-btn qty-trigger" data-grp="children" data-delta="-1">−</button>
             <div class="qty-display" id="qChildren">0</div>
-            <button class="qty-btn" data-grp="children" data-delta="1"  class="qty-btn qty-trigger">+</button>
+            <button class="qty-btn qty-trigger" data-grp="children" data-delta="1"  >+</button>
           </div>
         </div>
 
@@ -544,9 +544,9 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
             <span class="age-group-range">Under 6 years</span>
           </div>
           <div class="qty-ctrl">
-            <button class="qty-btn" data-grp="toddlers" data-delta="-1" class="qty-btn qty-trigger">−</button>
+            <button class="qty-btn qty-trigger" data-grp="toddlers" data-delta="-1">−</button>
             <div class="qty-display" id="qToddlers">0</div>
-            <button class="qty-btn" data-grp="toddlers" data-delta="1"  class="qty-btn qty-trigger">+</button>
+            <button class="qty-btn qty-trigger" data-grp="toddlers" data-delta="1"  >+</button>
           </div>
         </div>
 
@@ -891,7 +891,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     requestAnimationFrame(drawStars);
   }
-  // Stagger first stars so they don't all start at once
+
   setTimeout(function(){ spawn(); }, 200);
   setTimeout(function(){ spawn(); }, 1400);
   setTimeout(function(){ spawn(); }, 2800);
