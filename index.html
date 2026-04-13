@@ -30,7 +30,7 @@ body{background:var(--white);font-family:'EB Garamond',serif;color:var(--ink);ov
 .village-wrap{position:absolute;bottom:185px;left:0;right:0;z-index:2;}
 #waterCanvas{position:absolute;bottom:0;left:0;width:100%;z-index:3;display:block;}
 @keyframes ws{0%,100%{transform:translateX(0);}50%{transform:translateX(2.5%);}}
-.sand-strip{position:absolute;bottom:0;left:0;right:0;height:48px;background:linear-gradient(180deg,#d4a848 0%,#b88830 50%,#8a6418 100%);}
+
 .hero-content{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;}
 .script-pre{font-family:'EB Garamond',serif;font-style:italic;font-size:15px;color:#fff;letter-spacing:3px;margin-bottom:10px;text-shadow:0 2px 8px rgba(0,0,0,0.95),0 0 20px rgba(0,0,0,0.8);animation:riseIn 1s ease both 0.2s;}
 .title-happy{font-family:'Cinzel',serif;font-size:clamp(18px,4.5vw,32px);font-weight:400;letter-spacing:12px;color:#fff;text-transform:uppercase;text-shadow:0 2px 10px rgba(0,0,0,0.95),0 0 24px rgba(0,0,0,0.85);margin-bottom:4px;animation:riseIn 1.1s ease both 0.4s;}
@@ -224,7 +224,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
 @keyframes balloonFloat{0%{transform:translateX(-120px) translateY(0);opacity:0;}5%{opacity:1;}92%{opacity:1;}100%{transform:translateX(calc(100vw + 120px)) translateY(var(--bDrift,-30px));opacity:0;}}
 @keyframes balloonSway{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
 .balloon-body{animation:balloonSway var(--bs,3s) ease-in-out infinite;}
-@media(max-width:600px){.sand-strip{height:36px !important;}}
+@media(max-width:600px){}
 
 /* ── HIDDEN TRACKER ── */
 .tracker-gate{background:linear-gradient(180deg,#f8fcff 0%,#fdf6e3 100%);padding:60px 40px;position:relative;border-top:4px solid transparent;border-image:linear-gradient(90deg,var(--aegean-deep),var(--gold),var(--bougainvillea),var(--aegean-deep)) 1;}
@@ -258,6 +258,14 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
 .empty-list{padding:32px;text-align:center;font-family:'EB Garamond',serif;font-style:italic;color:var(--ink-muted);}
 .tracker-lock-btn{margin-top:20px;font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-muted);background:none;border:none;cursor:pointer;text-decoration:underline;}
 @media(max-width:500px){.tracker-stats{grid-template-columns:1fr 1fr;}.stat-card:last-child{grid-column:1/-1;}.guest-list-header,.guest-row-item{grid-template-columns:1fr 70px;}.gh:last-child,.gr-breakdown{display:none;}}
+
+.rsvp-deadline{font-family:'Cinzel',serif;font-size:12px;letter-spacing:4px;text-transform:uppercase;text-align:center;margin-bottom:32px;display:flex;align-items:center;justify-content:center;gap:12px;}
+.rsvp-deadline::before,.rsvp-deadline::after{content:'';flex:1;max-width:60px;height:1px;background:var(--bougainvillea);opacity:0.4;}
+.rsvp-deadline span{color:#fff;background:var(--bougainvillea);padding:6px 18px;border-radius:20px;font-weight:600;font-size:11px;letter-spacing:3px;box-shadow:0 2px 10px rgba(200,64,106,0.35);}
+.rsvp-closed{display:none;text-align:center;padding:40px 20px;max-width:520px;margin:0 auto;}
+.rsvp-closed-icon{font-size:40px;margin-bottom:16px;}
+.rsvp-closed-title{font-family:'Cormorant Infant',serif;font-style:italic;font-size:36px;color:var(--aegean-deep);margin-bottom:12px;}
+.rsvp-closed-msg{font-family:'EB Garamond',serif;font-style:italic;font-size:17px;color:var(--ink-muted);line-height:1.7;}
 </style>
 </head>
 <body>
@@ -362,7 +370,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
     </svg>
   </div>
   <canvas id="waterCanvas"></canvas>
-  <div class="sand-strip"></div>
   <div class="hero-content">
     <p class="script-pre">You are warmly invited to celebrate</p>
     <p class="title-happy">Happy</p>
@@ -434,6 +441,14 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
 <section class="rsvp-section">
   <h2 class="rsvp-headline">RSVP</h2>
   <p class="rsvp-sub">Will you join us at Hurricane Harbor?</p>
+  <p class="rsvp-deadline">RSVP by <span>April 20, 2026</span></p>
+
+  <!-- Shown when deadline has passed -->
+  <div class="rsvp-closed" id="rsvpClosed">
+    <div class="rsvp-closed-icon">🌊</div>
+    <p class="rsvp-closed-title">RSVPs are now closed</p>
+    <p class="rsvp-closed-msg">The RSVP deadline of April 20th has passed.<br>Please contact us directly at (623) 203-3575.</p>
+  </div>
 
   <div class="rsvp-form" id="rsvpForm">
     <div class="form-title"><div class="form-title-line"></div>Your Response<div class="form-title-line r"></div></div>
@@ -568,19 +583,36 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;back
       <div class="stat-card gold-top"><span class="stat-num" id="statYes">0</span><span class="stat-lbl">Attending</span></div>
       <div class="stat-card pink-top"><span class="stat-num" id="statGuests">0</span><span class="stat-lbl">Total Guests</span></div>
     </div>
+    <p style="font-family:'EB Garamond',serif;font-style:italic;font-size:13px;color:#4a6070;text-align:center;margin-bottom:16px;">
+      For all RSVPs visit <a href="https://formspree.io/forms/maqlzeyo/submissions" target="_blank" style="color:var(--aegean);font-style:normal;">Formspree Submissions →</a>
+    </p>
     <div class="guest-list">
       <div class="guest-list-header">
         <span class="gh">Name</span><span class="gh">Status</span><span class="gh">Breakdown</span>
       </div>
       <div id="guestListBody"></div>
     </div>
-    <button class="tracker-lock-btn" onclick="lockTracker()">🔒 Lock</button>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;">
+      <button class="tracker-lock-btn" onclick="window.lockTracker()">🔒 Lock</button>
+    </div>
   </div>
 </div>
 
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+
+  // ── RSVP DEADLINE CHECK ──
+  var DEADLINE = new Date('2026-04-20T23:59:59');
+  if (new Date() > DEADLINE) {
+    var form   = document.getElementById('rsvpForm');
+    var closed = document.getElementById('rsvpClosed');
+    var sub    = document.getElementById('submitBtn');
+    if (form)   form.style.display   = 'none';
+    if (closed) closed.style.display = 'block';
+    if (sub)    sub.disabled = true;
+  }
+
 
   // COUNTDOWN
   var party = new Date('2026-04-25T10:00:00');
@@ -689,13 +721,50 @@ document.addEventListener('DOMContentLoaded', function() {
   // ── PRIVATE TRACKER ──
   var TRACKER_PW = 'limye17';
 
+  window.renderTracker = function() {
+    var body       = document.getElementById('guestListBody');
+    var statTotal  = document.getElementById('statTotal');
+    var statYes    = document.getElementById('statYes');
+    var statGuests = document.getElementById('statGuests');
+
+    // Load all RSVPs from localStorage
+    var arr    = loadRSVPs();
+    var yes    = arr.filter(function(r){ return r.attending === 'yes'; });
+    var totalG = yes.reduce(function(s,r){ return s + (r.totalGuests||0); }, 0);
+
+    statTotal.textContent  = arr.length;
+    statYes.textContent    = yes.length;
+    statGuests.textContent = totalG;
+
+    if(!arr.length){
+      body.innerHTML = '<div class="empty-list"><p>No RSVPs yet — share the invite!</p></div>';
+      return;
+    }
+    body.innerHTML = arr.slice().reverse().map(function(r){
+      var b = '—';
+      if(r.attending === 'yes'){
+        var p = [];
+        if(r.adults)   p.push(r.adults   + ' Adult'  + (r.adults   > 1 ? 's' : ''));
+        if(r.teens)    p.push(r.teens    + ' Teen'   + (r.teens    > 1 ? 's' : ''));
+        if(r.children) p.push(r.children + (r.children > 1 ? ' Children' : ' Child'));
+        if(r.toddlers) p.push(r.toddlers + ' Under 3');
+        b = p.join('<br>') || '1';
+      }
+      return '<div class="guest-row-item">'
+        + '<span class="gr-name">'+r.name+'</span>'
+        + '<span class="gr-status '+r.attending+'">'+(r.attending==='yes'?'Attending':'Declined')+'</span>'
+        + '<span class="gr-breakdown">'+b+'</span>'
+        + '</div>';
+    }).join('');
+  }
+
   window.unlockTracker = function() {
     var pw = document.getElementById('trackerPw').value;
     if (pw === TRACKER_PW) {
       document.getElementById('trackerGateForm').style.display = 'none';
       document.getElementById('trackerContent').classList.add('unlocked');
       document.getElementById('trackerPwErr').classList.remove('show');
-      renderTracker();
+      window.renderTracker();
     } else {
       document.getElementById('trackerPwErr').classList.add('show');
       document.getElementById('trackerPw').value = '';
@@ -708,109 +777,139 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('trackerPw').value = '';
   }
 
-  window.renderTracker = function() {
-    var arr = loadRSVPs();
-    var yes = arr.filter(function(r){ return r.attending === 'yes'; });
-    var totalG = yes.reduce(function(s,r){ return s + (r.totalGuests||0); }, 0);
-    document.getElementById('statTotal').textContent  = arr.length;
-    document.getElementById('statYes').textContent    = yes.length;
-    document.getElementById('statGuests').textContent = totalG;
-    var body = document.getElementById('guestListBody');
-    if (!arr.length) { body.innerHTML = '<div class="empty-list"><p>No RSVPs yet!</p></div>'; return; }
-    body.innerHTML = arr.slice().reverse().map(function(r){
-      var b = '—';
-      if (r.attending === 'yes') {
-        var p = [];
-        if (r.adults)   p.push(r.adults   + ' Adult'   + (r.adults   > 1 ? 's' : ''));
-        if (r.teens)    p.push(r.teens    + ' Teen'    + (r.teens    > 1 ? 's' : ''));
-        if (r.children) p.push(r.children + (r.children > 1 ? ' Children' : ' Child'));
-        if (r.toddlers) p.push(r.toddlers + ' Under 3');
-        b = p.join('<br>') || '1';
-      }
-      return '<div class="guest-row-item"><span class="gr-name">'+r.name+'</span><span class="gr-status '+r.attending+'">'+(r.attending==='yes'?'Attending':'Declined')+'</span><span class="gr-breakdown">'+b+'</span></div>';
-    }).join('');
-  }
-
 }); // DOMContentLoaded
 </script>
 
 <script>
 (function(){
-  var canvas=document.getElementById('waterCanvas');
+  var canvas = document.getElementById('waterCanvas');
   if(!canvas) return;
-  var section=canvas.closest('section'), t=0, raf;
+  var section = canvas.closest('section');
+  var t = 0, raf;
+
   function resize(){
-    var mob=window.innerWidth<600;
-    var h=Math.round(section.offsetHeight*(mob?0.30:0.40));
-    canvas.width=section.offsetWidth; canvas.height=h; canvas.style.height=h+'px';
+    var isMobile = window.innerWidth < 600;
+    var h = Math.round(section.offsetHeight * (isMobile ? 0.30 : 0.38));
+    canvas.width  = section.offsetWidth;
+    canvas.height = h;
   }
+
   function draw(){
     resize();
-    var ctx=canvas.getContext('2d'), W=canvas.width, H=canvas.height;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
     ctx.clearRect(0,0,W,H);
-    var bg=ctx.createLinearGradient(0,0,0,H);
-    bg.addColorStop(0,'#52c4e8'); bg.addColorStop(0.06,'#38aad8'); bg.addColorStop(0.18,'#1e88c0');
-    bg.addColorStop(0.35,'#1068a8'); bg.addColorStop(0.55,'#0c5298'); bg.addColorStop(0.72,'#084282');
-    bg.addColorStop(0.86,'#063270'); bg.addColorStop(1,'#041e58');
-    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
-    var teal=ctx.createLinearGradient(0,0,W*0.5,0);
-    teal.addColorStop(0,'rgba(20,200,210,0.20)'); teal.addColorStop(0.3,'rgba(10,160,190,0.10)'); teal.addColorStop(1,'rgba(5,110,165,0)');
-    ctx.fillStyle=teal; ctx.fillRect(0,0,W,H);
-    var surf=ctx.createLinearGradient(0,0,0,H*0.12);
-    surf.addColorStop(0,'rgba(80,218,228,0.42)'); surf.addColorStop(0.5,'rgba(45,195,210,0.20)'); surf.addColorStop(1,'rgba(20,170,190,0)');
-    ctx.fillStyle=surf; ctx.fillRect(0,0,W,H*0.12);
-    var rows=[
-      {f:0.020,a:2.2,fr:0.028,sp:0.90,op:0.30,th:1.9,foam:true},
-      {f:0.058,a:2.8,fr:0.025,sp:0.78,op:0.26,th:1.7,foam:true},
-      {f:0.108,a:3.5,fr:0.022,sp:0.68,op:0.23,th:1.55,foam:true},
-      {f:0.166,a:4.3,fr:0.019,sp:0.60,op:0.21,th:1.45,foam:true},
-      {f:0.232,a:5.2,fr:0.016,sp:0.53,op:0.19,th:1.35,foam:false},
-      {f:0.304,a:6.2,fr:0.014,sp:0.47,op:0.17,th:1.25,foam:false},
-      {f:0.382,a:7.2,fr:0.012,sp:0.42,op:0.15,th:1.18,foam:false},
-      {f:0.464,a:8.2,fr:0.010,sp:0.38,op:0.13,th:1.10,foam:false},
-      {f:0.550,a:9.2,fr:0.009,sp:0.34,op:0.12,th:1.04,foam:false},
-      {f:0.638,a:10.2,fr:0.008,sp:0.30,op:0.10,th:0.98,foam:false},
-      {f:0.726,a:11.2,fr:0.007,sp:0.27,op:0.09,th:0.92,foam:false},
-      {f:0.812,a:12.0,fr:0.006,sp:0.24,op:0.08,th:0.88,foam:false},
-      {f:0.896,a:12.8,fr:0.005,sp:0.21,op:0.07,th:0.84,foam:false},
-      {f:0.950,a:13.5,fr:0.004,sp:0.18,op:0.06,th:0.80,foam:false},
+
+    // Deep Aegean — cyan surface to midnight sapphire
+    var bg = ctx.createLinearGradient(0,0,0,H);
+    bg.addColorStop(0,    '#52c4e8');
+    bg.addColorStop(0.06, '#38aad8');
+    bg.addColorStop(0.18, '#1e88c0');
+    bg.addColorStop(0.35, '#1068a8');
+    bg.addColorStop(0.55, '#0c5298');
+    bg.addColorStop(0.72, '#084282');
+    bg.addColorStop(0.86, '#063270');
+    bg.addColorStop(1,    '#041e58');
+    ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+
+    // Teal shimmer left
+    var tg = ctx.createLinearGradient(0,0,W*0.55,0);
+    tg.addColorStop(0,   'rgba(20,200,210,0.22)');
+    tg.addColorStop(0.4, 'rgba(10,160,190,0.10)');
+    tg.addColorStop(1,   'rgba(5,110,165,0)');
+    ctx.fillStyle = tg; ctx.fillRect(0,0,W,H);
+
+    // Bright shallow top
+    var sh = ctx.createLinearGradient(0,0,0,H*0.14);
+    sh.addColorStop(0,   'rgba(80,220,235,0.45)');
+    sh.addColorStop(0.5, 'rgba(45,195,210,0.22)');
+    sh.addColorStop(1,   'rgba(20,170,190,0)');
+    ctx.fillStyle = sh; ctx.fillRect(0,0,W,H*0.14);
+
+    // 14 animated wave rows
+    var waves = [
+      {f:0.022,a:2.2,fr:0.028,sp:0.90,op:0.30,th:1.9,foam:true},
+      {f:0.060,a:2.8,fr:0.025,sp:0.78,op:0.26,th:1.7,foam:true},
+      {f:0.110,a:3.5,fr:0.022,sp:0.68,op:0.23,th:1.5,foam:true},
+      {f:0.168,a:4.3,fr:0.019,sp:0.60,op:0.21,th:1.4,foam:true},
+      {f:0.234,a:5.2,fr:0.016,sp:0.53,op:0.19,th:1.3,foam:false},
+      {f:0.306,a:6.2,fr:0.014,sp:0.47,op:0.17,th:1.22,foam:false},
+      {f:0.384,a:7.2,fr:0.012,sp:0.42,op:0.15,th:1.15,foam:false},
+      {f:0.466,a:8.2,fr:0.010,sp:0.38,op:0.13,th:1.08,foam:false},
+      {f:0.552,a:9.2,fr:0.009,sp:0.34,op:0.12,th:1.02,foam:false},
+      {f:0.640,a:10.2,fr:0.008,sp:0.30,op:0.10,th:0.96,foam:false},
+      {f:0.728,a:11.2,fr:0.007,sp:0.27,op:0.09,th:0.90,foam:false},
+      {f:0.814,a:12.0,fr:0.006,sp:0.24,op:0.08,th:0.86,foam:false},
+      {f:0.898,a:12.8,fr:0.005,sp:0.21,op:0.07,th:0.82,foam:false},
+      {f:0.952,a:13.5,fr:0.004,sp:0.18,op:0.06,th:0.78,foam:false},
     ];
-    rows.forEach(function(wv){
-      var by=wv.f*H;
-      ctx.beginPath(); ctx.moveTo(0,by);
-      for(var x=0;x<=W;x+=1.5){
-        var y=by+Math.sin(x*wv.fr+t*wv.sp)*wv.a+Math.sin(x*wv.fr*1.75+t*wv.sp*1.48)*(wv.a*0.42)+Math.sin(x*wv.fr*0.45+t*wv.sp*0.62)*(wv.a*0.22)+Math.sin(x*wv.fr*3.20+t*wv.sp*2.20)*(wv.a*0.09);
+
+    waves.forEach(function(wv){
+      var by = wv.f * H;
+      ctx.beginPath(); ctx.moveTo(0, by);
+      for(var x=0; x<=W; x+=1.5){
+        var y = by
+          + Math.sin(x*wv.fr + t*wv.sp)*wv.a
+          + Math.sin(x*wv.fr*1.75 + t*wv.sp*1.48)*(wv.a*0.42)
+          + Math.sin(x*wv.fr*0.45 + t*wv.sp*0.62)*(wv.a*0.22)
+          + Math.sin(x*wv.fr*3.20 + t*wv.sp*2.20)*(wv.a*0.09);
         ctx.lineTo(x,y);
       }
-      ctx.strokeStyle='rgba(255,255,255,'+wv.op+')'; ctx.lineWidth=wv.th; ctx.lineCap='round'; ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,255,255,'+wv.op+')';
+      ctx.lineWidth = wv.th; ctx.lineCap = 'round'; ctx.stroke();
+
       if(wv.foam){
-        ctx.beginPath(); ctx.moveTo(0,by+2.5);
-        for(var x=0;x<=W;x+=2){ var y=by+2.5+Math.sin(x*wv.fr+t*wv.sp)*wv.a+Math.sin(x*wv.fr*1.75+t*wv.sp*1.48)*(wv.a*0.42); ctx.lineTo(x,y); }
-        ctx.strokeStyle='rgba(72,200,235,'+(wv.op*0.45)+')'; ctx.lineWidth=0.9; ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(0,by-2);
-        for(var x=0;x<=W;x+=3){ var y=by-2+Math.sin(x*wv.fr+t*wv.sp+0.8)*(wv.a*0.5); ctx.lineTo(x,y); }
-        ctx.strokeStyle='rgba(0,40,100,'+(wv.op*0.24)+')'; ctx.lineWidth=0.6; ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, by+2.5);
+        for(var x=0; x<=W; x+=2){
+          ctx.lineTo(x, by+2.5+Math.sin(x*wv.fr+t*wv.sp)*wv.a+Math.sin(x*wv.fr*1.75+t*wv.sp*1.48)*(wv.a*0.42));
+        }
+        ctx.strokeStyle = 'rgba(72,200,235,'+(wv.op*0.45)+')';
+        ctx.lineWidth = 0.9; ctx.stroke();
+
+        ctx.beginPath(); ctx.moveTo(0, by-2);
+        for(var x=0; x<=W; x+=3){
+          ctx.lineTo(x, by-2+Math.sin(x*wv.fr+t*wv.sp+0.8)*(wv.a*0.5));
+        }
+        ctx.strokeStyle = 'rgba(0,40,100,'+(wv.op*0.24)+')';
+        ctx.lineWidth = 0.6; ctx.stroke();
       }
     });
-    for(var i=0;i<20;i++){
-      var ry=H*(0.04+i*0.048+Math.sin(i*0.72+t*0.22)*0.014);
-      var rw=W*(0.12+Math.sin(i*1.35+t*0.17)*0.14+Math.sin(i*0.52)*0.09);
-      var rx=(W-rw)*0.5+Math.sin(i*0.94+t*0.20)*W*0.07;
-      var ra=(0.030+Math.sin(i*0.82+t*0.32)*0.020)*(1-i/24);
+
+    // Shimmer reflection bands
+    for(var i=0; i<18; i++){
+      var ry = H*(0.04 + i*0.052 + Math.sin(i*0.72+t*0.22)*0.013);
+      var rw = W*(0.12 + Math.sin(i*1.35+t*0.17)*0.13 + Math.sin(i*0.52)*0.08);
+      var rx = (W-rw)*0.5 + Math.sin(i*0.94+t*0.20)*W*0.07;
+      var ra = (0.028 + Math.sin(i*0.82+t*0.32)*0.018) * (1-i/22);
       if(ra<=0) continue;
-      var rg=ctx.createLinearGradient(rx,ry,rx+rw,ry);
-      rg.addColorStop(0,'rgba(180,238,255,0)'); rg.addColorStop(0.2,'rgba(210,248,255,'+ra+')');
-      rg.addColorStop(0.5,'rgba(235,255,255,'+(ra*2.2)+')'); rg.addColorStop(0.8,'rgba(210,248,255,'+ra+')'); rg.addColorStop(1,'rgba(180,238,255,0)');
-      ctx.fillStyle=rg; ctx.fillRect(rx,ry-1,rw,2.8);
+      var rg = ctx.createLinearGradient(rx,ry,rx+rw,ry);
+      rg.addColorStop(0,   'rgba(180,238,255,0)');
+      rg.addColorStop(0.2, 'rgba(210,248,255,'+ra+')');
+      rg.addColorStop(0.5, 'rgba(235,255,255,'+(ra*2.0)+')');
+      rg.addColorStop(0.8, 'rgba(210,248,255,'+ra+')');
+      rg.addColorStop(1,   'rgba(180,238,255,0)');
+      ctx.fillStyle = rg; ctx.fillRect(rx, ry-1, rw, 2.5);
     }
-    var dd=ctx.createLinearGradient(0,H*0.68,0,H); dd.addColorStop(0,'rgba(2,10,40,0)'); dd.addColorStop(1,'rgba(1,6,25,0.72)');
-    ctx.fillStyle=dd; ctx.fillRect(0,H*0.68,W,H*0.32);
-    var fm=ctx.createLinearGradient(0,0,0,20); fm.addColorStop(0,'rgba(255,255,255,0.70)'); fm.addColorStop(0.4,'rgba(220,248,255,0.38)'); fm.addColorStop(1,'rgba(80,190,225,0)');
-    ctx.fillStyle=fm; ctx.fillRect(0,0,W,20);
-    t+=0.013; raf=requestAnimationFrame(draw);
+
+    // Deep darkening at bottom
+    var dd = ctx.createLinearGradient(0, H*0.70, 0, H);
+    dd.addColorStop(0, 'rgba(2,10,40,0)');
+    dd.addColorStop(1, 'rgba(1,6,25,0.75)');
+    ctx.fillStyle = dd; ctx.fillRect(0, H*0.70, W, H*0.30);
+
+    // Foam line at top
+    var fm = ctx.createLinearGradient(0,0,0,18);
+    fm.addColorStop(0,   'rgba(255,255,255,0.72)');
+    fm.addColorStop(0.4, 'rgba(220,248,255,0.36)');
+    fm.addColorStop(1,   'rgba(80,190,225,0)');
+    ctx.fillStyle = fm; ctx.fillRect(0,0,W,18);
+
+    t += 0.013;
+    raf = requestAnimationFrame(draw);
   }
+
   draw();
-  window.addEventListener('resize',function(){ cancelAnimationFrame(raf); draw(); });
+  window.addEventListener('resize', function(){ cancelAnimationFrame(raf); draw(); });
 })();
 </script>
 </body>
